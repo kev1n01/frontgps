@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EL SOL - viajes y turismo</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+</head>
+
+<body>
+    <header>
+        <a href="index.html">
+            <img src="image.png" alt="logo">
+        </a>
+        <nav>
+            <ul>
+                <li>
+                    <a href="index.html">
+                        Inicio
+                    </a>
+                </li>
+                <li>
+                    <a href="ingreso.html">
+                        Ingresar
+                    </a>
+                </li>
+                <li>
+                    <a href="mapa.html">Mapa</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h2>Iniciar sesión</h2>
+        <form id="login">
+            <label for="dni">Ingrese su DNI: </label>
+            <input type="text" id="dni" name="dni" required autocomplete autofocus min="8" max="8" maxlength="8"
+                minlength="8">
+            <label for="placa">Ingrese su placa: (Ejemplo: XXX-XXX) </label>
+            <input type="text" id="placa" name="placa" required autocomplete placeholder="XXX-XXX" maxlength="7">
+            <p id="error"></p>
+            <input type="submit" value="Iniciar">
+        </form>
+    </main>
+    <footer>
+        <h2>empresa de transporte el sol</h2>
+        <div class="contacto">
+            <div class="ubicanos">
+                <h3>UBICANOS</h3>
+                <h4>Huánuco</h4>
+                <p>Huallayco 722, Huánuco, Perú</p>
+                <h4>Ambo</h4>
+                <p>Mariscal Castillo 316, Ambo, Perú</p>
+                <h4>San rafael</h4>
+                <p>Progreso 655, San Rafel, Perú</p>
+            </div>
+            <div class="llamada">
+                <h3>LLAMANOS</h3>
+                <p>123-456-7890</p>
+            </div>
+            <div class="redes">
+                <h3>REDES SOCIALES</h3>
+                <a href="#" target="_blank" class="facebook">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg
+                    " alt="logo">
+                </a>
+            </div>
+        </div>
+        <p class="copyright">© 2024 todos los derechos reservados.</p>
+    </footer>
+    </footer>
+    <script src="index.js"></script>
+</body>
+
+</html>
