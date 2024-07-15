@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de viajes</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body>
+    <header>
+        <a href="index.html">
+            <img src="image.png" alt="logo">
+        </a>
+        <nav>
+            <ul>
+                <li>
+                    <a href="index.html">
+                        Inicio
+                    </a>
+                </li>
+                <li>
+                    <a href="mapa.html">Mapa</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <div class="p-12">
+        <div class="lg:md:sm:flex gap-2">
+            <div class="md:w-[40%] sm:w-[100%] ">
+                <h2 class="text-center text-2xl uppercase mb-2">Registrar viaje</h2>
+                <p class="text-center text-xs text-gray-600 mb-5 text-wrap">La fecha y hora se registra automaticamente
+                </p>
+                <form id="form-crear" class="flex flex-col mb-8">
+                    <div class="flex gap-2 flex-col justify-center items-center">
+                        <div class="flex flex-col mb-3 text-center md:w-1/2 sm:w-[100%] rounded-md hidden p-2 text-sm"
+                            id="mensaje">
+                        </div>
+                        <div class="md:w-1/2 sm:w-[100%]">
+                            <label for="conductor" class="block mb-2 text-sm font-medium text-gray-900">Selecciona un
+                                conductor</label>
+                            <select id="conductor"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+
+                            </select>
+                        </div>
+                        <div class="md:w-1/2 sm:w-[100%]">
+                            <label for="ruta" class="block mb-2 text-sm font-medium text-gray-900">Selecciona la
+                                ruta</label>
+                            <select id="ruta"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                                <option value="Huánuco - Ambo">Huánuco - Ambo</option>
+                                <option value="Ambo - Huánuco">Ambo - Huánuco</option>
+                            </select>
+                        </div>
+                        <div class="md:w-1/2 sm:w-[100%]">
+                            <button type="submit"
+                                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center w-full">Registrar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="md:w-[60%] sm:w-[100%]">
+                <h2 class="text-center text-2xl uppercase mb-10">Historial de viajes</h2>
+                <div class="relative overflow-x-auto overflow-y-auto md:h-[300px] sm:h-[200px] lg:h-[700px] shadow-md sm:rounded-lg">
+                    <table class="w-full text-sm text-left text-gray-500">
+                        <thead class="text-xs text-gray-700 uppercase border-b sticky top-0 bg-white">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 bg-gray-100">
+                                    Información de conductor
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    Fecha
+                                </th>
+                                <th scope="col" class="px-6 py-3 bg-gray-100">
+                                    Hora
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    Ruta
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+
+    </div>
+    <script>
+        const tbody = document.querySelector('tbody');
+        const select_conductor = document.getElementById('conductor');
+        const select_ruta = document.getElementById('ruta');
+        const form = document.getElementById('form-crear');
+        const mensaje = document.getElementById('mensaje')
+
+        function formatearFecha(fechaISO) {
+            const fecha = new Date(fechaISO);
+            const dia = String(fecha.getDate()).padStart(2, '0');
+            const mes = String(fecha.getMonth() + 1).padStart(2, '0'); // Los meses en JavaScript son 0-indexed
+            const anio = fecha.getFullYear();
+            return `${dia}-${mes}-${anio}`;
+        }
+        // crear registro de viaje
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            const conductor_id = select_conductor.value;
+            const ruta = select_ruta.value;
+
+            // Realizar petición a la API
+            fetch('http://localhost:3000/api/crearregistro', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ conductor_id, ruta })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    if (data.estado == 'ok') {
+                        mensaje.classList.add('bg-green-200');
+                        obtenerViajes();
+                    } else {
+                        mensaje.classList.add('bg-red-200');
+                    }
+                    mensaje.innerHTML = data.mensaje;
+                    mensaje.classList.toggle('hidden');
+                    setTimeout(() => {
+                        mensaje.classList.toggle('hidden');
+                    }, 3000);
+                })
+                .catch(error => console.error(error));
+
+        });
+
+        // obtener los registros de viaje
+        function obtenerViajes() {
+            fetch('http://localhost:3000/api/registroviajes')
+                .then(response => response.json())
+                .then(data => {
+                    tbody.innerHTML = '';
+                    data.datos.forEach(element => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-100">
+                                <p><span class="font-border-blue-500">Nombre:</span> ${element.nombre}</p>
+                                <p><span class="font-border-blue-500">DNI:</span> ${element.dni}</p>
+                                <p><span class="font-border-blue-500">Placa:</span> ${element.placa}</p>
+                            </td>
+                            <td class="px-6 py-4">${formatearFecha(element.fecha)}</td>
+                            <td class="px-6 py-4 bg-gray-100">${element.hora}</td>
+                            <td class="px-6 py-4">${element.ruta}</td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                })
+                .catch(error => console.error(error));
+        }
+
+        obtenerViajes();
+        // obtener conductores
+        fetch('http://localhost:3000/api/conductores-crear')
+            .then(response => response.json())
+            .then(data => {
+                data.datos.forEach(element => {
+                    const option = document.createElement('option');
+                    option.value = element.id;
+                    option.text = element.nombre;
+                    select_conductor.appendChild(option);
+                });
+            })
+            .catch(error => console.error(error));
+    </script>
+</body>
+
+</html>
